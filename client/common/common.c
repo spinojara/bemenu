@@ -194,7 +194,8 @@ usage(FILE *out, const char *name)
           " --single-instance     force a single menu instance.\n"
           " --fork                always fork. (bemenu-run)\n"
           " --no-exec             do not execute command. (bemenu-run)\n"
-          " --auto-select         when one entry is left, automatically select it\n\n"
+          " --auto-select         when one entry is left, automatically select it\n"
+	  " --path                use alternative path when listing items.\n\n"
 
           "Use BEMENU_BACKEND env variable to force backend:\n"
           " curses               ncurses based terminal backend\n"
@@ -328,6 +329,7 @@ do_getopt(struct client *client, int *argc, char **argv[])
         { "scf",          required_argument, 0, 0x115 },
         { "bdr",          required_argument, 0, 0x121 },
         { "binding",      required_argument, 0, 0x128 },
+	{ "path",         required_argument, 0, 0x129 },
 
         { "disco",       no_argument,       0, 0x116 },
         { 0, 0, 0, 0 }
@@ -529,6 +531,9 @@ do_getopt(struct client *client, int *argc, char **argv[])
                     client->key_binding = BM_KEY_BINDING_DEFAULT;
                 }
                 break;
+            case 0x129:
+                client->path = optarg;
+                break;
 
             case 0x116:
                 disco();
@@ -594,6 +599,7 @@ menu_with_options(struct client *client)
     bm_menu_set_border_size(menu, client->border_size);
     bm_menu_set_border_radius(menu, client->border_radius);
     bm_menu_set_key_binding(menu, client->key_binding);
+    bm_menu_set_path(menu, client->path);
 
     if (client->center) {
         bm_menu_set_align(menu, BM_ALIGN_CENTER);

@@ -779,6 +779,16 @@ bm_menu_set_key_binding(struct bm_menu *menu, enum bm_key_binding key_binding){
     menu->key_binding = key_binding;
 }
 
+void
+bm_menu_set_path(struct bm_menu *menu, const char *path){
+    menu->path = path;
+}
+
+const char *
+bm_menu_get_path(const struct bm_menu *menu){
+    return menu->path;
+}
+
 struct bm_item**
 bm_menu_get_selected_items(const struct bm_menu *menu, uint32_t *out_nmemb)
 {

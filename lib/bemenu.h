@@ -934,6 +934,21 @@ BM_PUBLIC enum bm_password_mode bm_menu_get_password(struct bm_menu *menu);
  */
 BM_PUBLIC void bm_menu_set_key_binding(struct bm_menu *menu, enum bm_key_binding);
 
+/**
+ * Specify the path variable that should be used.
+ *
+ * @param menu bm_menu instance to set the path for.
+ * @param path the alternative path.
+ */
+BM_PUBLIC void bm_menu_set_path(struct bm_menu *menu, const char *path);
+
+/**
+ * What is the path variable?
+ *
+ * @param menu bm_menu instance to get the path from.
+ * @return the alternative path.
+ */
+BM_PUBLIC const char *bm_menu_get_path(const struct bm_menu *menu);
 
 /**  @} Properties */
 

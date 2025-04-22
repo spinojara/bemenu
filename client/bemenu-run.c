@@ -35,7 +35,7 @@ strip_slash(char *str)
 }
 
 static const char*
-get_paths(const char *env, const char *default_paths, struct paths *state)
+get_paths(const char *cmdpath, const char *env, const char *default_paths, struct paths *state)
 {
     if (state->path && !*state->path) {
         free(state->paths);
@@ -44,7 +44,7 @@ get_paths(const char *env, const char *default_paths, struct paths *state)
 
     if (!state->paths) {
         const char *paths;
-        if (!(paths = getenv(env)) || !paths[0])
+        if ((!(paths = cmdpath) && !(paths = getenv(env))) || !paths[0])
             paths = default_paths;
 
         state->path = state->paths = c_strdup(paths);
@@ -124,7 +124,7 @@ read_items_to_menu_from_path(struct bm_menu *menu)
     const char *path;
     struct paths state;
     memset(&state, 0, sizeof(state));
-    while ((path = get_paths("PATH", "/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/bin:/sbin", &state)))
+    while ((path = get_paths(bm_menu_get_path(menu), "PATH", "/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/bin:/sbin", &state)))
         read_items_to_menu_from_dir(menu, path);
 }
 

@@ -457,6 +457,11 @@ struct bm_menu {
      */
     char vim_mode;
     uint32_t vim_last_key;
+
+    /**
+     * Alternative path.
+     */
+    const char *path;
 };
 
 /* library.c */

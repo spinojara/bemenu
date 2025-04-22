@@ -124,6 +124,9 @@ list of executables under PATH and the selected items are executed.
 	Filter items for a given string before showing the menu.
 	Affects *--ifne* and *--accept-single*
 
+*--path*
+	Specify an alternative path to use when listing items.
+
 ## Backend options
 
 These options are only available on backends specified in the parentheses:
