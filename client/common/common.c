@@ -623,7 +623,7 @@ menu_with_options(struct client *client)
 }
 
 enum bm_run_result
-run_menu(const struct client *client, struct bm_menu *menu, void (*item_cb)(const struct client *client, struct bm_item *item))
+run_menu(const struct client *client, struct bm_menu *menu, void (*item_cb)(const struct client *client, struct bm_item *item, const char *path))
 {
     if (client->single_instance) {
         char *xdg_runtime_dir = getenv("XDG_RUNTIME_DIR");
@@ -653,7 +653,7 @@ run_menu(const struct client *client, struct bm_menu *menu, void (*item_cb)(cons
     }
 
     if ((client->accept_single || client->auto_select) && item_count == 1) {
-        item_cb(client, *items);
+        item_cb(client, *items, bm_menu_get_path(menu));
         return BM_RUN_RESULT_SELECTED;
     }
 
@@ -671,7 +671,7 @@ run_menu(const struct client *client, struct bm_menu *menu, void (*item_cb)(cons
             if(item_count == 1) {
                 struct bm_item *highlighted = bm_menu_get_highlighted_item(menu);
                 if (highlighted) {
-                    item_cb(client, highlighted);
+                    item_cb(client, highlighted, bm_menu_get_path(menu));
                     return BM_RUN_RESULT_SELECTED;
                 }
             }
@@ -707,7 +707,7 @@ run_menu(const struct client *client, struct bm_menu *menu, void (*item_cb)(cons
             {
             uint32_t i, count;
             struct bm_item **items = bm_menu_get_selected_items(menu, &count);
-            for (i = 0; i < count; ++i) item_cb(client, items[i]);
+            for (i = 0; i < count; ++i) item_cb(client, items[i], bm_menu_get_path(menu));
             }
             break;
         default: break;

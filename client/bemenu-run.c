@@ -131,7 +131,7 @@ read_items_to_menu_from_path(struct bm_menu *menu)
 static inline void ignore_ret(int useless, ...) { (void)useless; }
 
 static void
-launch(const struct client *client, const char *bin)
+launch(const struct client *client, const char *bin, const char *path)
 {
     struct sigaction action = {
         .sa_handler = SIG_DFL,
@@ -151,23 +151,44 @@ launch(const struct client *client, const char *bin)
             ignore_ret(0, freopen("/dev/null", "w", stderr));
         }
 
-        char **tokens;
-        if (!(tokens = tokenize_quoted_to_argv(bin, NULL, NULL)))
-            _exit(EXIT_FAILURE);
+        if (path) {
+            char *pathdup = strdup(path);
+            for (char *pathstr = pathdup; ; pathstr = NULL) {
+                    char *pathtoken = strtok(pathstr, ":");
+                if (pathtoken == NULL)
+                    break;
 
-        execvp(tokens[0], tokens);
-        _exit(EXIT_SUCCESS);
+                char *pathfull = calloc(strlen(pathtoken) + 1 + strlen(bin) + 1, 1);
+                sprintf(pathfull, "%s/%s", pathtoken, bin);
+
+                    char **tokens;
+                    if (!(tokens = tokenize_quoted_to_argv(pathfull, NULL, NULL)))
+                        _exit(EXIT_FAILURE);
+                free(pathfull);
+
+                    execv(tokens[0], tokens);
+            }
+            free(pathdup);
+        }
+        else {
+                char **tokens;
+                if (!(tokens = tokenize_quoted_to_argv(bin, NULL, NULL)))
+                    _exit(EXIT_FAILURE);
+
+            execvp(tokens[0], tokens);
+        }
+            _exit(EXIT_SUCCESS);
     }
 }
 
 static void
-item_cb(const struct client *client, struct bm_item *item)
+item_cb(const struct client *client, struct bm_item *item, const char *path)
 {
     if (client->no_exec) {
         const char *text = bm_item_get_text(item);
         printf("%s\n", (text ? text : ""));
     } else {
-        launch(client, bm_item_get_text(item));
+        launch(client, bm_item_get_text(item), path);
     }
 }
 
